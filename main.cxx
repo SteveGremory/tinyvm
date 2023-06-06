@@ -1,16 +1,10 @@
-#include "memory/memory.hxx"
-
 #include <iostream>
+#include <vm/vm.hxx>
 
 int main() {
-        int x = 10;
-        Stack<int> s;
+        uint64_t program[] = {0x0D674300, 0x0D027B00, 0x01670200, 0x0D0C0A00,
+                              0x010C0C01, 0x01000102, 0x69000000};
 
-        for (int i = 0; i <= 512000; i++)
-                s.push(x);
-
-        int z{1230};
-        s.push(z);
-
-        std::cout << s.at(STACK_MAX_SIZE - 1) << std::endl;
+        VM x = VM(program);
+        x.run();
 }
