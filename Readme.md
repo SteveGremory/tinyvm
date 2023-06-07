@@ -2,6 +2,8 @@
 
 A register based virtual machine that uses a bytecode interpreter and features fast IO, cheap VM level threads, fast vm level communication and is designed to be used as a DB engine.
 
+Oh btw, everything that succeeds returns a 0 and everything that doesn't returns a -1.
+
 # Running
 
 To run the VM, simply compile using CMake.

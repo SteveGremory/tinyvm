@@ -18,14 +18,14 @@ void decode() {}
  * @brief Execute the current instruction
  */
 void VM::execute() {
-        do {
-                int bytecode = program[program_counter++];
 
-                int instruction = (bytecode & 0xFF000000) >> 24;
-                int reg1 = (bytecode & 0xFF0000) >> 16;
-                int reg2 = (bytecode & 0xFF00) >> 8;
-                int reg3 = (bytecode & 0xFF);
+        while (this->running) {
+                int_fast32_t bytecode = program[program_counter++];
 
+                int_fast8_t instruction = (bytecode & 0xFF000000) >> 24;
+                int_fast8_t reg1 = (bytecode & 0xFF0000) >> 16;
+                int_fast8_t reg2 = (bytecode & 0xFF00) >> 8;
+                int_fast8_t reg3 = (bytecode & 0xFF);
                 // printf("Instr:%d\nReg1: %d\nReg2: %d\nReg3: %d\n",
                 // instruction, reg1, reg2, reg3);
 
@@ -47,22 +47,23 @@ void VM::execute() {
                         break;
                 case INC:
                         registers[reg1]++;
+
                         break;
                 case NEG:
-                        registers[reg1]++;
+                        registers[reg1]--;
                         break;
                 // Branching
                 case JMP:
                         program_counter = reg1;
                         break;
                 case JNE:
-                        if (!(registers[reg1] ^ registers[reg2])) {
-                                program_counter = registers[reg3];
+                        if (registers[reg1] != registers[reg2]) {
+                                program_counter = reg3;
                         }
                         break;
                 case JE:
-                        if ((registers[reg1] ^ registers[reg2])) {
-                                program_counter = registers[reg3];
+                        if (registers[reg1] == registers[reg2]) {
+                                program_counter = reg3;
                         }
                         break;
                 // Memory Operations
@@ -103,7 +104,7 @@ void VM::execute() {
                                   << std::endl;
                         break;
                 }
-        } while (this->running);
+        }
 }
 
 /**

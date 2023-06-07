@@ -1,9 +1,9 @@
 #include "bytecodeio/bytecodeio.hxx"
 
-ByteCodeIO::ByteCodeIO(std::string& filepath) : filepath(filepath) {}
+ByteCodeIO::ByteCodeIO(std::filesystem::path& filepath) : filepath(filepath) {}
 
 ByteCodeIO::ByteCodeIO(const char* filepath) {
-        this->filepath = std::string(filepath);
+        this->filepath = std::filesystem::path(filepath);
 }
 
 int ByteCodeIO::write(std::vector<uint32_t>& bytecode) {

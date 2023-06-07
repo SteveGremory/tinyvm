@@ -1,5 +1,6 @@
 #pragma once
 #include <cinttypes>
+#include <vector>
 
 class VM {
 public:
@@ -26,12 +27,12 @@ public:
 
 private:
         // 256 Registers, 64 bit each
-        int registers[256] = {0};
+        int_fast64_t registers[256] = {0};
 
         // The program to be run
         std::vector<uint32_t> program;
         // Program counter
-        uint64_t program_counter;
+        uint_fast64_t program_counter;
 
         // State of the machine; false when halted
         bool running;
@@ -40,6 +41,7 @@ private:
         // 1 -> true
         enum Instructions {
                 // Math
+                NONE = 0x00,
                 ADD = 0x01, // Add one register to another
                 SUB = 0x02, // Subtract one register from another
                 MUL = 0x03, // Multiplication

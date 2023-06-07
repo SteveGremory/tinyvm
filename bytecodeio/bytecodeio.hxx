@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -9,7 +10,7 @@ public:
          * @brief Constructor for ByteCodeIO
          * @param filepath Path to the file that is to be operated on
          */
-        ByteCodeIO(std::string& filepath);
+        ByteCodeIO(std::filesystem::path& filepath);
 
         /**
          * @brief Constructor for ByteCodeIO
@@ -33,5 +34,5 @@ public:
         std::vector<uint32_t> read();
 
 private:
-        std::string filepath;
+        std::filesystem::path filepath;
 };
