@@ -23,9 +23,9 @@ void VM::execute() {
                 int_fast32_t bytecode = program[program_counter++];
 
                 int_fast8_t instruction = (bytecode & 0xFF000000) >> 24;
-                int_fast8_t reg1 = (bytecode & 0xFF0000) >> 16;
-                int_fast8_t reg2 = (bytecode & 0xFF00) >> 8;
-                int_fast8_t reg3 = (bytecode & 0xFF);
+                int_fast32_t reg1 = (bytecode & 0xFF0000) >> 16;
+                int_fast32_t reg2 = (bytecode & 0xFF00) >> 8;
+                int_fast32_t reg3 = (bytecode & 0xFF);
                 // printf("Instr:%d\nReg1: %d\nReg2: %d\nReg3: %d\n",
                 // instruction, reg1, reg2, reg3);
 
@@ -38,6 +38,7 @@ void VM::execute() {
                         break;
                 case MUL:
                         registers[reg3] = registers[reg1] * registers[reg2];
+
                         break;
                 case DIV:
                         registers[reg3] = registers[reg1] / registers[reg2];
@@ -47,7 +48,6 @@ void VM::execute() {
                         break;
                 case INC:
                         registers[reg1]++;
-
                         break;
                 case NEG:
                         registers[reg1]--;
