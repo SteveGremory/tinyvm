@@ -5,8 +5,9 @@ class VM {
 public:
         /**
          * @brief Start the exection of the program
+         * @param program The bytecode for the program to be run
          */
-        VM(uint64_t program[]);
+        VM(std::vector<uint32_t>& program);
 
         /**
          * @brief Decode the current instruction
@@ -28,7 +29,7 @@ private:
         int registers[256] = {0};
 
         // The program to be run
-        uint64_t* program;
+        std::vector<uint32_t> program;
         // Program counter
         uint64_t program_counter;
 
@@ -60,8 +61,13 @@ private:
                 NOT = 0x15,
                 LSHIFT = 0x16,
                 RSHIFT = 0x17,
+                // TODO: Custom operations
+                WRITEFILE_SYNC = 0x18,
+                WRITEFILE_ASYNC = 0x19,
+                SOCKET_OPEN = 0x2A,
+                SOCKET_CONNECT = 0x2B,
+                PRINT = 0x2C,
                 // System Operations
                 STALL = 0x69
-                // TODO: Custom operations
         };
 };

@@ -4,7 +4,7 @@
 /**
  * @brief Start the exection of the program
  */
-VM::VM(uint64_t program[]) : program(program) {
+VM::VM(std::vector<uint32_t>& program) : program(program) {
         program_counter = 0;
         this->running = true;
 };
@@ -32,20 +32,38 @@ void VM::execute() {
                 switch (instruction) {
                 case ADD:
                         registers[reg3] = registers[reg1] + registers[reg2];
-                        std::cout << "Result: " << registers[reg3] << std::endl;
                         break;
-
                 case SUB:
+                        registers[reg3] = registers[reg1] - registers[reg2];
+                        break;
                 case MUL:
+                        registers[reg3] = registers[reg1] * registers[reg2];
+                        break;
                 case DIV:
+                        registers[reg3] = registers[reg1] / registers[reg2];
+                        break;
                 case MOD:
+                        registers[reg3] = registers[reg1] % registers[reg2];
+                        break;
                 case INC:
+                        registers[reg1]++;
+                        break;
                 case NEG:
+                        registers[reg1]++;
+                        break;
                 // Branching
                 case JMP:
+                        program_counter = reg1;
+                        break;
                 case JNE:
+                        if (!(registers[reg1] ^ registers[reg2])) {
+                                program_counter = registers[reg3];
+                        }
+                        break;
                 case JE:
-                        std::cerr << "Not implemented it yet." << std::endl;
+                        if ((registers[reg1] ^ registers[reg2])) {
+                                program_counter = registers[reg3];
+                        }
                         break;
                 // Memory Operations
                 case MOV:
@@ -56,16 +74,33 @@ void VM::execute() {
                         break;
                 // Bitwise operations
                 case AND:
+                        registers[reg3] = registers[reg1] & registers[reg2];
+                        break;
                 case OR:
+                        registers[reg3] = registers[reg1] | registers[reg2];
+                        break;
                 case XOR:
+                        registers[reg3] = registers[reg1] ^ registers[reg2];
+                        break;
                 case NOT:
+                        registers[reg2] = !(registers[reg1]);
+                        break;
                 case LSHIFT:
+                        registers[reg3] = registers[reg1] << registers[reg2];
+                        break;
                 case RSHIFT:
+                        registers[reg3] = registers[reg1] >> registers[reg2];
+                        break;
+                case PRINT:
+                        std::cout << reg1 << ": " << registers[reg1]
+                                  << std::endl;
+                        break;
                 case STALL:
                         running = false;
                         break;
                 default:
-                        running = false;
+                        std::cerr << "This instruction hasn't been implemented!"
+                                  << std::endl;
                         break;
                 }
         } while (this->running);
