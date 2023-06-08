@@ -64,10 +64,6 @@ private:
                 LSHIFT = 0x16,
                 RSHIFT = 0x17,
                 // TODO: Custom operations
-                WRITEFILE_SYNC = 0x18,
-                WRITEFILE_ASYNC = 0x19,
-                SOCKET_OPEN = 0x2A,
-                SOCKET_CONNECT = 0x2B,
                 PRINT = 0x2C,
                 // System Operations
                 STALL = 0x69

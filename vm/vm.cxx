@@ -19,17 +19,26 @@ void decode() {}
  */
 void VM::execute() {
 
-        while (this->running) {
-                int_fast32_t bytecode = program[program_counter++];
 
-                int_fast8_t instruction = (bytecode & 0xFF000000) >> 24;
-                int_fast32_t reg1 = (bytecode & 0xFF0000) >> 16;
-                int_fast32_t reg2 = (bytecode & 0xFF00) >> 8;
-                int_fast32_t reg3 = (bytecode & 0xFF);
+        int_fast32_t bytecode = program[program_counter];
+
+        uint_fast8_t instruction = (bytecode & 0xFF000000) >> 24;
+        uint_fast8_t reg1 = (bytecode & 0xFF0000) >> 16;
+        uint_fast8_t reg2 = (bytecode & 0xFF00) >> 8;
+        uint_fast8_t reg3 = (bytecode & 0xFF);
+        
+	while (this->running) {
                 // printf("Instr:%d\nReg1: %d\nReg2: %d\nReg3: %d\n",
                 // instruction, reg1, reg2, reg3);
 
-                switch (instruction) {
+        	bytecode = program[program_counter++];
+
+        	instruction = (bytecode & 0xFF000000) >> 24;
+        	reg1 = (bytecode & 0xFF0000) >> 16;
+        	reg2 = (bytecode & 0xFF00) >> 8;
+        	reg3 = (bytecode & 0xFF);
+
+		switch (instruction) {
                 case ADD:
                         registers[reg3] = registers[reg1] + registers[reg2];
                         break;

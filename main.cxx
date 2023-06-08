@@ -36,15 +36,18 @@ int main(int argc, char** argv) {
                 LSHIFT = 0x16,
                 RSHIFT = 0x17,
                 STALL = 0x69*/
-        std::vector<uint32_t> input = {0x0D12ff00, 0x0D11ff00, 0x03121212,
+        /*
+	std::vector<uint32_t> input = {0x0D12ff00, 0x0D11ff00, 0x03121212,
                                        0x03121112, 0x0D010100, 0x06010000,
                                        0x0B011205, 0x69000000};
-
-        // ByteCodeIO bc_buffer_1 = ByteCodeIO(argv[1]);
-        // bc_buffer_1.write(input);
+*/
+        //ByteCodeIO bc_buffer_1 = ByteCodeIO(argv[1]);
+        //bc_buffer_1.write(input);
         //
-        // ByteCodeIO bc_buffer_2 = ByteCodeIO(argv[1]);
-        // std::vector<uint32_t> data = bc_buffer_2.read();
+        ByteCodeIO bc_buffer_2 = ByteCodeIO(argv[1]);
+        std::vector<uint32_t> input;
+	input.reserve(20);
+	input = bc_buffer_2.read();
 
         VM x = VM(input);
         x.run();

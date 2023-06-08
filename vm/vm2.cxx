@@ -23,9 +23,9 @@ void decode() {}
 /**
  * @brief Execute the current instruction
  */
-__attribute__((__noinline__, __noclone__)) void VM::execute() {
+void VM::execute() {
 
-        static void* jump_table[] = {
+        static const void* jump_table[] = {
             [NONE] = &&do_NONE,     [ADD] = &&do_ADD,
             [SUB] = &&do_SUB,       [MUL] = &&do_MUL,
             [DIV] = &&do_DIV,       [MOD] = &&do_MOD,
@@ -38,8 +38,9 @@ __attribute__((__noinline__, __noclone__)) void VM::execute() {
             [RSHIFT] = &&do_RSHIFT, [PRINT] = &&do_PRINT,
             [STALL] = &&do_STALL};
 
-        uint32_t* bytecode = this->program.data();
-        uint64_t instruction, reg1, reg2, reg3;
+        auto data = this->program.data();
+        uint32_t* bytecode = data;
+	uint8_t instruction, reg1, reg2, reg3;
         set_regs(bytecode);
         goto* jump_table[instruction];
 
@@ -101,14 +102,14 @@ do_NEG : {
 }
 // Branching
 do_JMP : {
-        bytecode = program.data() + reg1;
+        bytecode = data + reg1;
 
         set_regs(bytecode);
         goto* jump_table[instruction];
 }
 do_JNE : {
         if (registers[reg1] != registers[reg2]) {
-                bytecode = program.data() + reg3;
+                bytecode = data + reg3;
                 set_regs(bytecode);
                 goto* jump_table[instruction];
         }
@@ -119,7 +120,7 @@ do_JNE : {
 }
 do_JE : {
         if (registers[reg1] == registers[reg2]) {
-                bytecode = program.data() + reg3;
+                bytecode = data + reg3;
                 set_regs(bytecode);
                 goto* jump_table[instruction];
         }
