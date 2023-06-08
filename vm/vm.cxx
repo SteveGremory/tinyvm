@@ -5,7 +5,7 @@
  * @brief Start the exection of the program
  */
 VM::VM(std::vector<uint32_t>& program) : program(program) {
-        program_counter = 0;
+
         this->running = true;
 };
 
@@ -14,106 +14,180 @@ VM::VM(std::vector<uint32_t>& program) : program(program) {
  */
 void decode() {}
 
+#define set_regs(bytecode)                                                     \
+        instruction = (*bytecode & 0xFF000000) >> 24;                          \
+        reg1 = (*bytecode & 0xFF0000) >> 16;                                   \
+        reg2 = (*bytecode & 0xFF00) >> 8;                                      \
+        reg3 = (*bytecode & 0xFF);
+
 /**
  * @brief Execute the current instruction
  */
 void VM::execute() {
 
+        static const void* jump_table[] = {
+            &&do_STALL,  &&do_NONE,   &&do_ADD,  &&do_SUB, &&do_MUL, &&do_DIV,
+            &&do_MOD,    &&do_INC,    &&do_NEG,  &&do_JMP, &&do_JNE, &&do_JE,
+            &&do_MOV,    &&do_TST,    &&do_AND,  &&do_OR,  &&do_XOR, &&do_NOT,
+            &&do_LSHIFT, &&do_RSHIFT, &&do_PRINT};
 
-        int_fast32_t bytecode = program[program_counter];
+        auto data = this->program.data();
+        uint32_t* bytecode = data;
+        uint8_t instruction, reg1, reg2, reg3;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
 
-        uint_fast8_t instruction = (bytecode & 0xFF000000) >> 24;
-        uint_fast8_t reg1 = (bytecode & 0xFF0000) >> 16;
-        uint_fast8_t reg2 = (bytecode & 0xFF00) >> 8;
-        uint_fast8_t reg3 = (bytecode & 0xFF);
-        
-	while (this->running) {
-                // printf("Instr:%d\nReg1: %d\nReg2: %d\nReg3: %d\n",
-                // instruction, reg1, reg2, reg3);
+do_NONE : {
+        bytecode++;
 
-        	bytecode = program[program_counter++];
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
 
-        	instruction = (bytecode & 0xFF000000) >> 24;
-        	reg1 = (bytecode & 0xFF0000) >> 16;
-        	reg2 = (bytecode & 0xFF00) >> 8;
-        	reg3 = (bytecode & 0xFF);
+do_ADD : {
+        registers[reg3] = registers[reg1] + registers[reg2];
 
-		switch (instruction) {
-                case ADD:
-                        registers[reg3] = registers[reg1] + registers[reg2];
-                        break;
-                case SUB:
-                        registers[reg3] = registers[reg1] - registers[reg2];
-                        break;
-                case MUL:
-                        registers[reg3] = registers[reg1] * registers[reg2];
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_SUB : {
+        registers[reg3] = registers[reg1] - registers[reg2];
 
-                        break;
-                case DIV:
-                        registers[reg3] = registers[reg1] / registers[reg2];
-                        break;
-                case MOD:
-                        registers[reg3] = registers[reg1] % registers[reg2];
-                        break;
-                case INC:
-                        registers[reg1]++;
-                        break;
-                case NEG:
-                        registers[reg1]--;
-                        break;
-                // Branching
-                case JMP:
-                        program_counter = reg1;
-                        break;
-                case JNE:
-                        if (registers[reg1] != registers[reg2]) {
-                                program_counter = reg3;
-                        }
-                        break;
-                case JE:
-                        if (registers[reg1] == registers[reg2]) {
-                                program_counter = reg3;
-                        }
-                        break;
-                // Memory Operations
-                case MOV:
-                        registers[reg1] = reg2;
-                        break;
-                case TST:
-                        registers[reg3] = registers[reg1] ^ registers[reg2];
-                        break;
-                // Bitwise operations
-                case AND:
-                        registers[reg3] = registers[reg1] & registers[reg2];
-                        break;
-                case OR:
-                        registers[reg3] = registers[reg1] | registers[reg2];
-                        break;
-                case XOR:
-                        registers[reg3] = registers[reg1] ^ registers[reg2];
-                        break;
-                case NOT:
-                        registers[reg2] = !(registers[reg1]);
-                        break;
-                case LSHIFT:
-                        registers[reg3] = registers[reg1] << registers[reg2];
-                        break;
-                case RSHIFT:
-                        registers[reg3] = registers[reg1] >> registers[reg2];
-                        break;
-                case PRINT:
-                        std::cout << reg1 << ": " << registers[reg1]
-                                  << std::endl;
-                        break;
-                case STALL:
-                        running = false;
-                        break;
-                default:
-                        std::cerr << "This instruction hasn't been implemented!"
-                                  << std::endl;
-                        break;
-                }
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_MUL : {
+        registers[reg3] = registers[reg1] * registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_DIV : {
+        registers[reg3] = registers[reg1] / registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_MOD : {
+        registers[reg3] = registers[reg1] % registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_INC : {
+        registers[reg1]++;
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_NEG : {
+        registers[reg1]++;
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+// Branching
+do_JMP : {
+        bytecode = data + reg1;
+
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_JNE : {
+        if (registers[reg1] != registers[reg2]) {
+                bytecode = data + reg3;
+                set_regs(bytecode);
+                goto* jump_table[instruction];
         }
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_JE : {
+        if (registers[reg1] == registers[reg2]) {
+                bytecode = data + reg3;
+                set_regs(bytecode);
+                goto* jump_table[instruction];
+        }
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+// Memory Operations
+do_MOV : {
+        registers[reg1] = reg2;
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_TST : {
+        registers[reg3] = registers[reg1] ^ registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+// Bitwise operations
+do_AND : {
+        registers[reg3] = registers[reg1] & registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_OR : {
+        registers[reg3] = registers[reg1] | registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_XOR : {
+        registers[reg3] = registers[reg1] ^ registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_NOT : {
+        registers[reg2] = !(registers[reg1]);
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_LSHIFT : {
+        registers[reg3] = registers[reg1] << registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_RSHIFT : {
+        registers[reg3] = registers[reg1] >> registers[reg2];
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_PRINT : {
+        std::cout << reg1 << ": " << registers[reg1] << std::endl;
+
+        bytecode++;
+        set_regs(bytecode);
+        goto* jump_table[instruction];
+}
+do_STALL : { return; }
 }
 
 /**
