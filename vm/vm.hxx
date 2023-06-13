@@ -11,11 +11,6 @@ public:
         VM(std::vector<uint32_t>& program);
 
         /**
-         * @brief Decode the current instruction
-         */
-        void decode();
-
-        /**
          * @brief Execute the current instruction
          */
         void execute();
@@ -31,16 +26,10 @@ private:
 
         // The program to be run
         std::vector<uint32_t> program;
-        // Program counter
-        uint_fast64_t program_counter;
-
-        // State of the machine; false when halted
-        bool running;
 
         // 0 -> false
         // 1 -> true
         enum Instructions {
-
                 // System Operations
                 STALL,
                 NONE,
@@ -68,6 +57,7 @@ private:
                 RSHIFT,
                 // TODO: Custom operations
                 PRINT,
+                POW,
 
         };
 };
