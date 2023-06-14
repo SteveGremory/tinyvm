@@ -6,6 +6,10 @@ ByteCodeIO::ByteCodeIO(const char* filepath) {
         this->filepath = std::filesystem::path(filepath);
 }
 
+ByteCodeIO::ByteCodeIO(std::string& filepath) {
+        this->filepath = std::filesystem::path(filepath);
+}
+
 int ByteCodeIO::write(std::vector<uint32_t>& bytecode) {
         if (filepath.empty() || bytecode.empty()) {
                 std::cerr << "No filepath or bytecode specified." << std::endl;

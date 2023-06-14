@@ -10,12 +10,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(tinyvm main.cxx vm/vm.cxx bytecodeio/bytecodeio.cxx assembler/assembler.cxx)
+add_executable(tinyvm main.cxx vm/vm.cxx bytecodeio/bytecodeio.cxx)
 
 target_include_directories(tinyvm PUBLIC
     ${CMAKE_SOURCE_DIR}
-    .
-    vm
-    bytecodeio
-    assembler
 )

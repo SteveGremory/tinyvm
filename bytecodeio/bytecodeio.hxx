@@ -18,6 +18,12 @@ public:
          */
         ByteCodeIO(const char* filepath);
 
+        /**
+         * @brief Constructor for ByteCodeIO
+         * @param filepath Path to the file that is to be operated on
+         */
+        ByteCodeIO(std::string& filepath);
+
         ~ByteCodeIO() = default;
 
         /**

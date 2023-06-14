@@ -6,12 +6,9 @@
  * @brief Start the exection of the program
  */
 VM::VM(std::vector<uint32_t>& program)
-    : program(program){
-
-      };
+    : program(program) {};
 
 #define set_regs(bytecode)                                                     \
-                                                                               \
         instruction = (*bytecode & 0xFF000000) >> 24;                          \
         if (instruction > jump_table_length) {                                 \
                 std::cerr << "Invalid instruction: 0x" << std::hex             \
@@ -23,7 +20,6 @@ VM::VM(std::vector<uint32_t>& program)
         reg3 = (*bytecode & 0xFF);
 
 #define next_instruction()                                                     \
-        ;                                                                      \
         bytecode++;                                                            \
         set_regs(bytecode);                                                    \
         goto* jump_table[instruction];
@@ -36,31 +32,20 @@ VM::VM(std::vector<uint32_t>& program)
 /**
  * @brief Execute the current instruction
  */
-void VM::execute() {
+void VM::run() {
 
-        constexpr void* jump_table[] = {[STALL] = &&do_STALL,
-                                        [NONE] = &&do_NONE,
-                                        [ADD] = &&do_ADD,
-                                        [SUB] = &&do_SUB,
-                                        [MUL] = &&do_MUL,
-                                        [DIV] = &&do_DIV,
-                                        [MOD] = &&do_MOD,
-                                        [INC] = &&do_INC,
-                                        [NEG] = &&do_NEG,
-                                        [JMP] = &&do_JMP,
-                                        [JNE] = &&do_JNE,
-                                        [JE] = &&do_JE,
-                                        [MOV] = &&do_MOV,
-                                        [TST] = &&do_TST,
-                                        [AND] = &&do_AND,
-                                        [OR] = &&do_OR,
-                                        [XOR] = &&do_XOR,
-                                        [NOT] = &&do_NOT,
-                                        [LSHIFT] = &&do_LSHIFT,
-                                        [RSHIFT] = &&do_RSHIFT,
-                                        [PRINT] = &&do_PRINT,
-                                        [POW] = &&do_POW
-
+        constexpr void* jump_table[] = {
+            [STALL] = &&do_STALL,   [NONE] = &&do_NONE,
+            [ADD] = &&do_ADD,       [SUB] = &&do_SUB,
+            [MUL] = &&do_MUL,       [DIV] = &&do_DIV,
+            [MOD] = &&do_MOD,       [INC] = &&do_INC,
+            [NEG] = &&do_NEG,       [JMP] = &&do_JMP,
+            [JNE] = &&do_JNE,       [JE] = &&do_JE,
+            [MOV] = &&do_MOV,       [TST] = &&do_TST,
+            [AND] = &&do_AND,       [OR] = &&do_OR,
+            [XOR] = &&do_XOR,       [NOT] = &&do_NOT,
+            [LSHIFT] = &&do_LSHIFT, [RSHIFT] = &&do_RSHIFT,
+            [PRINT] = &&do_PRINT,
         };
 
         size_t jump_table_length = sizeof(jump_table) / sizeof(void*);
@@ -185,14 +170,7 @@ do_RSHIFT : {
         next_instruction();
 }
 
-do_PRINT : { std::cout << reg1 << ": " << registers[reg1] << std::endl; }
-
-do_POW : {}
+do_PRINT : { std::cout << "Value: " << registers[reg1] << std::endl; }
 
 do_STALL : { return; }
 }
-
-/**
- * @brief Run the whole instruction set
- */
-void VM::run() { this->execute(); }

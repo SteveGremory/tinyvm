@@ -11,11 +11,6 @@ public:
         VM(std::vector<uint32_t>& program);
 
         /**
-         * @brief Execute the current instruction
-         */
-        void execute();
-
-        /**
          * @brief Run the whole instruction set
          */
         void run();
@@ -57,7 +52,5 @@ private:
                 RSHIFT,
                 // TODO: Custom operations
                 PRINT,
-                POW,
-
         };
 };
