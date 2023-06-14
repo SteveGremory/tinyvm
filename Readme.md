@@ -1,5 +1,8 @@
 # TinyVM
 
+For now, the project has been archived but I will most probably continue work on it later.
+In it's current condition, tinyVM is 100% "usable" as it was intended to be used, as a barebones, fast VM.
+
 A simple register based virtual machine that uses a bytecode interpreter.
 
 # Running
